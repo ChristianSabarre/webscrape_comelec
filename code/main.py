@@ -115,9 +115,9 @@ async def main():
             return
 
         for region in regions["regions"]:
-            # Only process NATIONAL_CAPITAL_REGION_-_MANILA
+            # Only process NATIONAL_CAPITAL_REGION
             region_name_normalized = region["name"].replace(" ", "_").replace("-", "_")
-            if "NATIONAL_CAPITAL_REGION" not in region_name_normalized or "MANILA" not in region_name_normalized:
+            if "NATIONAL_CAPITAL_REGION" not in region_name_normalized:
                 continue
                 
             if checkpoint and not resumed_region:
