@@ -52,7 +52,7 @@ def filter_results(result):
     
     filtered_results = []
     for position in result["results"]:
-        position_name = position["position_name"].lower()
+        position_name = position["position_name"]
         if "MAYOR of NCR - CITY OF MANILA" in position_name or "VICE-MAYOR of NCR - CITY OF MANILA" in position_name or "SENATOR of PHILIPPINES" in position_name:
             filtered_results.append(position)
     
@@ -115,6 +115,11 @@ async def main():
             return
 
         for region in regions["regions"]:
+            # Only process NATIONAL_CAPITAL_REGION_-_MANILA
+            region_name_normalized = region["name"].replace(" ", "_").replace("-", "_")
+            if "NATIONAL_CAPITAL_REGION" not in region_name_normalized or "MANILA" not in region_name_normalized:
+                continue
+                
             if checkpoint and not resumed_region:
                 if region["code"] != checkpoint["region"]["code"]:
                     continue
