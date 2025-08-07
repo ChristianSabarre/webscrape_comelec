@@ -1,4 +1,5 @@
 import logging
+import asyncio
 
 BASE_URL = "https://2025electionresults.comelec.gov.ph/data"
 
@@ -6,7 +7,17 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 async def fetch_json(client, url):
     try:
-        resp = await client.get(url)
+        # Add a small delay to avoid triggering anti-bot measures
+        await asyncio.sleep(0.5)
+        
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://2025electionresults.comelec.gov.ph/',
+            'Origin': 'https://2025electionresults.comelec.gov.ph'
+        }
+        resp = await client.get(url, headers=headers)
         resp.raise_for_status()
         return resp.json()
     except Exception as e:
@@ -14,6 +25,13 @@ async def fetch_json(client, url):
         return None
 
 async def fetch_regions(client):
+    # First visit the main site to establish a session
+    try:
+        await client.get("https://2025electionresults.comelec.gov.ph/")
+        await asyncio.sleep(2)  # Wait a bit for any initial setup
+    except:
+        pass  # Ignore errors from the main page
+    
     return await fetch_json(client, f"{BASE_URL}/regions/local/0.json")
 
 async def fetch_provinces(client, region_code):

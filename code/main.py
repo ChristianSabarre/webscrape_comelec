@@ -109,7 +109,18 @@ async def main():
     # flags for hierarchy resume
     resumed_region = resumed_province = resumed_city = resumed_barangay = resumed_precinct = False
 
-    async with httpx.AsyncClient(timeout=30) as client:
+    async with httpx.AsyncClient(
+        timeout=30,
+        headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        }
+    ) as client:
         regions = await fetch_regions(client)
         if not regions:
             return
